@@ -66,7 +66,7 @@ public class Analyzer {
 		
 		Set<Sentence> sentences = readFile(filename);
 		
-		Map<String, Double> map = null; 
+		Map<String, Double> map = new HashMap<>();
 		
 		if (sentences == null || sentences.isEmpty()) return map;
 		
@@ -83,8 +83,12 @@ public class Analyzer {
 			
 			for (String word : words) {
 				word = word.toLowerCase();
+				if (!Character.isAlphabetic(word.charAt(0))) {
+					continue;
+				}
 				if (count.containsKey(word)) {
 					count.put(word, count.get(word) + 1);
+					total.put(word, total.get(word) + score * 1.0);
 				}
 				else {
 					count.put(word, 1);
@@ -108,14 +112,17 @@ public class Analyzer {
 			throw new IllegalStateException("wordScores Map has not been initialized");
 		}
 				
-		String[] words = sentence.split(" ");
+		String[] words = sentence.toLowerCase().split(" ");
 		
-		int total = 0, count = 0;
+		float total = 0;
+		int count = 0;
 		
 		for (String word : words) {
-			if (wordScores.containsKey(word)) {
+			if (Character.isAlphabetic(word.charAt(0))) {
 				count++;
-				total += wordScores.get(word);
+				if (wordScores.containsKey(word)) {
+					total += wordScores.get(word);
+				}
 			}
 		}
 		
